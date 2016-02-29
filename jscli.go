@@ -17,6 +17,7 @@ var (
 	columnSeqPtr = kingpin.Flag("column-seq", "code").Short('c').Default(" ").String()
 	funcListPtr  = ArgsStrList(kingpin.Flag("funcion", "function").Short('f'))
 	pathListPtr  = ArgsStrList(kingpin.Flag("path", "command search path").Short('p'))
+	jsListPtr    = ArgsStrList(kingpin.Flag("js", "Javascript file").Short('j'))
 )
 
 type argsStrList []string
@@ -47,6 +48,19 @@ func readAll() string {
 	} else {
 		panic("Failed to read stdin")
 	}
+}
+
+func readJSFile(vm *otto.Otto, path string) {
+	file, err := os.Open(path)
+	defer file.Close()
+	if err != nil {
+		panic(err)
+	}
+	bytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		panic(err)
+	}
+	vm.Run(string(bytes))
 }
 
 type Matrix [][]string
@@ -136,6 +150,11 @@ func main() {
 
 	for i := 0; i < len(*pathListPtr); i += 1 {
 		addPATHEnv((*pathListPtr)[i])
+	}
+
+	for i := 0; i < len(*jsListPtr); i += 1 {
+		fmt.Printf("%v", i)
+		readJSFile(vm, (*jsListPtr)[i])
 	}
 
 	for i := 0; i < len(*codeListPtr); i += 1 {
