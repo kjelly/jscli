@@ -12,9 +12,9 @@ import (
 )
 
 var (
-	codeListPtr  = ArgsStrList(kingpin.Arg("code", "code").Required())
-	lineSeqPtr   = kingpin.Flag("line-seq", "code").Short('l').Default("\n").String()
-	columnSeqPtr = kingpin.Flag("column-seq", "code").Short('c').Default(" ").String()
+	codeListPtr  = ArgsStrList(kingpin.Arg("code", "the js code you want to run").Required())
+	lineSeqPtr   = kingpin.Flag("line-seq", "the char used for split line").Short('l').Default("\n").String()
+	columnSeqPtr = kingpin.Flag("column-seq", "the char used for split column").Short('c').Default(" ").String()
 	funcListPtr  = ArgsStrList(kingpin.Flag("funcion", "function").Short('f'))
 	pathListPtr  = ArgsStrList(kingpin.Flag("path", "command search path").Short('p'))
 	jsListPtr    = ArgsStrList(kingpin.Flag("js", "Javascript file").Short('j'))
