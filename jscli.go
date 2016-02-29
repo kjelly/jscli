@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	codePtr      = kingpin.Arg("code", "code").Required().String()
+	codeListPtr  = ArgsStrList(kingpin.Arg("code", "code").Required())
 	lineSeqPtr   = kingpin.Flag("line-seq", "code").Short('l').Default("\n").String()
 	columnSeqPtr = kingpin.Flag("column-seq", "code").Short('c').Default(" ").String()
 	funcListPtr  = ArgsStrList(kingpin.Flag("funcion", "function").Short('f'))
@@ -138,5 +138,8 @@ func main() {
 		addPATHEnv((*pathListPtr)[i])
 	}
 
-	vm.Run(*codePtr)
+	for i := 0; i < len(*codeListPtr); i += 1 {
+		vm.Run((*codeListPtr)[i])
+	}
+
 }
