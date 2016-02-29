@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -18,6 +19,7 @@ var (
 	funcListPtr  = ArgsStrList(kingpin.Flag("funcion", "function").Short('f'))
 	pathListPtr  = ArgsStrList(kingpin.Flag("path", "command search path").Short('p'))
 	jsListPtr    = ArgsStrList(kingpin.Flag("js", "Javascript file").Short('j'))
+	reversePtr   = kingpin.Flag("reverse", "execute code with reverse order").Short('r').Bool()
 )
 
 type argsStrList []string
@@ -157,8 +159,18 @@ func main() {
 		readJSFile(vm, (*jsListPtr)[i])
 	}
 
-	for i := 0; i < len(*codeListPtr); i += 1 {
-		vm.Run((*codeListPtr)[i])
+	codeList := sort.StringSlice(*codeListPtr)
+
+	if *reversePtr {
+		for i, j := 0, len(codeList)-1; i < j; i, j = i+1, j-1 {
+			codeList[i], codeList[j] = codeList[j], codeList[i]
+		}
+	}
+
+	fmt.Printf("%v", codeList)
+
+	for i := 0; i < len(codeList); i += 1 {
+		vm.Run(codeList[i])
 	}
 
 }
