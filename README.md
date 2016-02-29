@@ -1,2 +1,26 @@
 # jscli
-Write and run simple javascript code in common line
+=======
+
+Write and run simple Javascript code in common line
+
+Introduction
+------------
+
+Write javascript code in command line, read data from stdin, and show the result you expect!
+The tools is like awk. But it let you write in Javascript.
+
+
+Example
+-------
+
+json pretty-printing
+
+```
+$ cat json.content |jscli "print(JSON.stringify(JSON.parse(stdin), null, 2))"
+```
+
+list listening address and port
+
+```
+sudo netstat -tulnp|grep LISTEN|jscli "for(i=0;i<lines.length;i+=1){print(lines[i].split(/\s+/)[3])}"
+```
