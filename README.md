@@ -9,6 +9,20 @@ Introduction
 Write javascript code in command line, read data from stdin, and show the result you expect!
 The tools is like awk. But it let you write in Javascript.
 
+Why use jscli?
+
+- You don't learn awk if you are good at Javascript.
+- It's easy to add help function using any programming language.
+- Only one executable. There are not many dependences.
+
+
+Install
+-------
+
+```
+$ go get github.com/ya790206/jscli 
+```
+
 
 Example
 -------
