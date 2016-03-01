@@ -100,7 +100,10 @@ func readJSFile(vm *otto.Otto, path string) {
 	if err != nil {
 		panic(err)
 	}
-	vm.Run(string(bytes))
+	_, err := vm.Run(string(bytes))
+	if err != nil {
+		panic(err)
+	}
 }
 
 type Matrix [][]string
