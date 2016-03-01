@@ -167,6 +167,47 @@ func setBuiltinFunc(vm *otto.Otto) {
 
 		return result
 	})
+	vm.Set("print", func(call otto.FunctionCall) otto.Value {
+		for i := 0; i < len(call.ArgumentList); i += 1 {
+			str, err := call.Argument(i).ToString()
+			if err == nil {
+				fmt.Print(str)
+			} else {
+				panic(err)
+			}
+		}
+		val, _ := vm.ToValue("")
+		return val
+	})
+
+	sprintf := func(call otto.FunctionCall) string {
+		args := make([]interface{}, len(call.ArgumentList)-1)
+		format, err := call.Argument(0).ToString()
+		if err != nil {
+			panic(err)
+		}
+		for i := 1; i < len(call.ArgumentList); i += 1 {
+			str, err := call.Argument(i).ToString()
+			if err == nil {
+				args[i-1] = str
+			} else {
+				panic(err)
+			}
+		}
+		return fmt.Sprintf(format, args...)
+	}
+
+	vm.Set("sprint", func(call otto.FunctionCall) otto.Value {
+		val := sprintf(call)
+		ret, _ := vm.ToValue(val)
+		return ret
+	})
+	vm.Set("printf", func(call otto.FunctionCall) otto.Value {
+		val := sprintf(call)
+		fmt.Print(val)
+		ret, _ := vm.ToValue(val)
+		return ret
+	})
 }
 
 func callExternalFunc(cmd string, args []string) string {
@@ -243,7 +284,7 @@ func main() {
 	vm.Set("stdout", "")
 	vm.Set("lines", lines)
 	vm.Set("matrix", *matrixPtr)
-	vm.Run("print = console.log")
+	vm.Run("println = console.log")
 	setBuiltinFunc(vm)
 
 	for i := 0; i < len(*funcListPtr); i += 1 {
