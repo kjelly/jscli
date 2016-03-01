@@ -100,7 +100,7 @@ func readJSFile(vm *otto.Otto, path string) {
 	if err != nil {
 		panic(err)
 	}
-	_, err := vm.Run(string(bytes))
+	_, err = vm.Run(string(bytes))
 	if err != nil {
 		panic(err)
 	}
@@ -116,6 +116,57 @@ func setBuiltinFunc(vm *otto.Otto) {
 		}
 	}
 
+	vm.Set("exec", func(call otto.FunctionCall) otto.Value {
+		args := make([]string, len(call.ArgumentList))
+		cmdPath, err := call.Argument(0).ToString()
+		if err != nil {
+			panic(err)
+		}
+		for i := 1; i < len(call.ArgumentList); i += 1 {
+			ret, err := call.Argument(i).ToString()
+			if err == nil {
+				args[i] = ret
+			} else {
+				panic(err)
+			}
+
+		}
+		output := callExternalFunc(cmdPath, args)
+		result, err := vm.ToValue(output)
+		if err != nil {
+			panic(err)
+		}
+
+		return result
+	})
+
+	vm.Set("execStdin", func(call otto.FunctionCall) otto.Value {
+		args := make([]string, len(call.ArgumentList))
+		cmdPath, err := call.Argument(0).ToString()
+		if err != nil {
+			panic(err)
+		}
+		stdin, err := call.Argument(1).ToString()
+		if err != nil {
+			panic(err)
+		}
+		for i := 2; i < len(call.ArgumentList); i += 1 {
+			ret, err := call.Argument(i).ToString()
+			if err == nil {
+				args[i] = ret
+			} else {
+				panic(err)
+			}
+
+		}
+		output := callExternalFuncWithStdin(cmdPath, stdin, args)
+		result, err := vm.ToValue(output)
+		if err != nil {
+			panic(err)
+		}
+
+		return result
+	})
 }
 
 func callExternalFunc(cmd string, args []string) string {
@@ -124,7 +175,16 @@ func callExternalFunc(cmd string, args []string) string {
 		panic(err)
 	}
 	return string(out)
+}
 
+func callExternalFuncWithStdin(cmd string, stdin string, args []string) string {
+	p := exec.Command(cmd, args...)
+	p.Stdin = strings.NewReader(stdin)
+	out, err := p.Output()
+	if err != nil {
+		panic(err)
+	}
+	return string(out)
 }
 
 func addPATHEnv(path string) {
@@ -159,7 +219,6 @@ func initExternelFunc(vm *otto.Otto, cmdPath string) {
 		if err != nil {
 			panic(err)
 		}
-
 		return result
 	})
 
@@ -208,7 +267,7 @@ func main() {
 	}
 
 	for i := 0; i < len(codeList); i += 1 {
-		val, err := vm.Run(codeList[i])
+		_, err := vm.Run(codeList[i])
 		if err != nil {
 			panic(err)
 		}
