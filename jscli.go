@@ -155,7 +155,6 @@ func main() {
 	}
 
 	for i := 0; i < len(*jsListPtr); i += 1 {
-		fmt.Printf("%v", i)
 		readJSFile(vm, (*jsListPtr)[i])
 	}
 
