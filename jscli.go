@@ -43,6 +43,44 @@ func ArgsStrList(s kingpin.Settings) (target *[]string) {
 	return
 }
 
+var builtinFuncCode = []string{
+	`
+printArray = function(arr) {
+	for(i=0;i<arr.length;i+=1){
+		console.log(i)
+	}
+}
+
+`,
+	`
+function isFunc(val) {
+	if(typeof val === 'function') {
+		return true;
+	}else{
+		return false;
+	}
+}
+`,
+	`
+mapIf = function(arr, func, preFunc, postFunc) {
+	ret = []
+	for(i=0;i<arr.length;i+=1) {
+		val = arr[i];
+		if(isFunc(preFunc) && !preFunc(val)){
+			continue;
+		}
+		out = func(val);
+		if(isFunc(postFunc) && !postFunc(out)){
+			continue;
+		}
+		ret.push(val);
+	}
+	return ret;
+}
+
+`,
+}
+
 func readAll() string {
 	bytes, err := ioutil.ReadAll(os.Stdin)
 	if err == nil {
@@ -67,13 +105,13 @@ func readJSFile(vm *otto.Otto, path string) {
 
 type Matrix [][]string
 
-func setPrintArrayFunc(vm *otto.Otto) {
-	vm.Run(`
-	printArray = function(arr) {
-		for(i=0;i<arr.length;i+=1){
-			console.log(i)
+func setBuiltinFunc(vm *otto.Otto) {
+	for _, ele := range builtinFuncCode {
+		_, err := vm.Run(ele)
+		if err != nil {
+			panic(err)
 		}
-	}`)
+	}
 
 }
 
@@ -144,7 +182,7 @@ func main() {
 	vm.Set("lines", lines)
 	vm.Set("matrix", *matrixPtr)
 	vm.Run("print = console.log")
-	setPrintArrayFunc(vm)
+	setBuiltinFunc(vm)
 
 	for i := 0; i < len(*funcListPtr); i += 1 {
 		initExternelFunc(vm, (*funcListPtr)[i])
@@ -166,10 +204,11 @@ func main() {
 		}
 	}
 
-	fmt.Printf("%v", codeList)
-
 	for i := 0; i < len(codeList); i += 1 {
-		vm.Run(codeList[i])
+		val, err := vm.Run(codeList[i])
+		if err != nil {
+			panic(err)
+		}
 	}
 
 }
