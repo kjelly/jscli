@@ -51,7 +51,8 @@ printArray = function(arr) {
 		console.log(arr[i])
 	}
 }
-
+printA=printArray;
+printL=printArray;
 `,
 	`
 function isFunc(val) {
@@ -88,7 +89,7 @@ printColumn = function(arr, column, func) {
 		printFunc(line[column]);
 	});
 }
-printC=printColumn
+printC=printColumn;
 `,
 }
 
