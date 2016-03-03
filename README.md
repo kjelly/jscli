@@ -20,7 +20,7 @@ Install
 -------
 
 ```
-$ go get github.com/ya790206/jscli 
+$ go get github.com/ya790206/jscli
 ```
 
 
@@ -38,3 +38,32 @@ list listening address and port
 ```
 sudo netstat -tulnp|grep LISTEN|jscli "for(i=0;i<lines.length;i+=1){print(lines[i].split(/\s+/)[3])}"
 ```
+or
+
+```
+sudo netstat -tulnp|grep LISTEN|jscli "function showLine(i){println(i[3]);}" "matrix.map(showLine)
+```
+or
+
+```
+sudo netstat -tulnp|grep LISTEN|jscli "printC(matrix, 3)"
+```
+
+
+list listening address and port and process
+
+```
+sudo netstat -tulnp|grep LISTEN|jscli "function showLine(i){printf('%s -> %s\n', i[3], i[6]);}" "matrix.map(showLine)"
+```
+
+Javascript Builtin Function
+---------------------------
+
+Name | Explain
+---- | -------
+printArray | printArray
+printA | printArray
+printColumn | printColumn
+mapIf | printColumn
+mapIf | printColumn
+
