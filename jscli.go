@@ -47,7 +47,7 @@ var builtinFuncCode = []string{
 	`
 printArray = function(arr) {
 	for(i=0;i<arr.length;i+=1){
-		console.log(i)
+		console.log(arr[i])
 	}
 }
 
@@ -78,6 +78,16 @@ mapIf = function(arr, func, preFunc, postFunc) {
 	return ret;
 }
 
+`,
+	`
+printColumn = function(arr, column, func) {
+	if(isFunc(func)) printFunc=func;
+	else printFunc=println;
+	arr.map(function(line, index, x){
+		printFunc(line[column]);
+	});
+}
+printC=printColumn
 `,
 }
 
