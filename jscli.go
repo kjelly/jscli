@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -15,7 +16,7 @@ import (
 var (
 	codeListPtr  = ArgsStrList(kingpin.Arg("code", "the js code you want to run").Required())
 	lineSeqPtr   = kingpin.Flag("line-seq", "the char used for split line").Short('l').Default("\n").String()
-	columnSeqPtr = kingpin.Flag("column-seq", "the char used for split column").Short('c').Default(" ").String()
+	columnSeqPtr = kingpin.Flag("column-seq", "the char used for split column").Short('c').Default(" +").String()
 	funcListPtr  = ArgsStrList(kingpin.Flag("funcion", "function").Short('f'))
 	pathListPtr  = ArgsStrList(kingpin.Flag("path", "command search path").Short('p'))
 	jsListPtr    = ArgsStrList(kingpin.Flag("js", "Javascript file").Short('j'))
@@ -281,11 +282,15 @@ func main() {
 	kingpin.Parse()
 
 	stdin := readAll()
-	lines := strings.Split(stdin, *lineSeqPtr)
+
+	lineSpliter := regexp.MustCompile(*lineSeqPtr)
+	columnSpilter := regexp.MustCompile(*columnSeqPtr)
+
+	lines := lineSpliter.Split(stdin, -1)
 	matrixPtr := new(Matrix)
 
 	for i := 0; i < len(lines); i += 1 {
-		*matrixPtr = append(*matrixPtr, strings.Split(lines[i], *columnSeqPtr))
+		*matrixPtr = append(*matrixPtr, columnSpilter.Split(lines[i], -1))
 	}
 
 	vm := otto.New()
