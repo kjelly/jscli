@@ -21,6 +21,7 @@ var (
 	pathListPtr  = ArgsStrList(kingpin.Flag("path", "command search path").Short('p'))
 	jsListPtr    = ArgsStrList(kingpin.Flag("js", "Javascript file").Short('j'))
 	reversePtr   = kingpin.Flag("reverse", "execute code with reverse order").Short('r').Bool()
+	nostdinPtr   = kingpin.Flag("nostdin", "Dont't read from stdin").Bool()
 )
 
 type argsStrList []string
@@ -282,7 +283,13 @@ func main() {
 	fmt.Printf("")
 	kingpin.Parse()
 
-	stdin := readAll()
+	var stdin string
+
+	if *nostdinPtr {
+		stdin = ""
+	}else{
+		stdin = readAll()
+	}
 
 	lineSpliter := regexp.MustCompile(*lineSeqPtr)
 	columnSpilter := regexp.MustCompile(*columnSeqPtr)
