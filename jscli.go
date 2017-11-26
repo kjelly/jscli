@@ -2,46 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/alexflint/go-arg"
 	"github.com/kjelly/jscli/lib/libvm"
 	"github.com/kjelly/jscli/lib/utils"
 	"github.com/robertkrimen/otto"
-	"gopkg.in/alecthomas/kingpin.v2"
 	"io/ioutil"
 	"os"
 	"sort"
 )
-
-var (
-	codeListPtr  = ArgsStrList(kingpin.Arg("code", "the js code you want to run").Required())
-	lineSeqPtr   = kingpin.Flag("line-seq", "the char used for split line").Short('l').Default("\n").String()
-	columnSeqPtr = kingpin.Flag("column-seq", "the char used for split column").Short('c').Default(" +").String()
-	funcListPtr  = ArgsStrList(kingpin.Flag("funcion", "function").Short('f'))
-	pathListPtr  = ArgsStrList(kingpin.Flag("path", "command search path").Short('p'))
-	jsListPtr    = ArgsStrList(kingpin.Flag("js", "Javascript file").Short('j'))
-	reversePtr   = kingpin.Flag("reverse", "execute code with reverse order").Short('r').Bool()
-	nostdinPtr   = kingpin.Flag("nostdin", "Dont't read from stdin").Bool()
-)
-
-type argsStrList []string
-
-func (i *argsStrList) Set(value string) error {
-	*i = append(*i, value)
-	return nil
-}
-
-func (i *argsStrList) String() string {
-	return ""
-}
-
-func (i *argsStrList) IsCumulative() bool {
-	return true
-}
-
-func ArgsStrList(s kingpin.Settings) (target *[]string) {
-	target = new([]string)
-	s.SetValue((*argsStrList)(target))
-	return
-}
 
 func readAll() string {
 	bytes, err := ioutil.ReadAll(os.Stdin)
@@ -71,17 +39,30 @@ func getWd() string {
 func main() {
 	addPATHEnv(getWd())
 	fmt.Printf("")
-	kingpin.Parse()
+
+	var args struct {
+		CodeList  []string `arg:"positional"`
+		LineSeq   string   `arg:"-l"`
+		ColumnSeq string   `arg:"-c"`
+		FuncList  []string `arg:"-f"`
+		JSList    []string `arg:"-j"`
+		PathList  []string `arg:"-p"`
+		Reverse   bool     `arg:"-r"`
+		NoStdin   bool     `arg:"--nostdin"`
+	}
+	args.LineSeq = "\n"
+	args.ColumnSeq = " +"
+	arg.MustParse(&args)
 
 	var stdin string
 
-	if *nostdinPtr {
+	if args.NoStdin {
 		stdin = ""
 	} else {
 		stdin = readAll()
 	}
 
-	lines, matrixPtr := utils.ParseStdin(stdin, *columnSeqPtr, *lineSeqPtr)
+	lines, matrixPtr := utils.ParseStdin(stdin, args.ColumnSeq, args.LineSeq)
 
 	vm := otto.New()
 
@@ -92,21 +73,21 @@ func main() {
 	vm.Run("println = console.log")
 	libvm.SetBuiltinFunc(vm)
 
-	for i := 0; i < len(*funcListPtr); i += 1 {
-		libvm.InitExternelFunc(vm, (*funcListPtr)[i])
+	for i := 0; i < len(args.FuncList); i += 1 {
+		libvm.InitExternelFunc(vm, (args.FuncList)[i])
 	}
 
-	for i := 0; i < len(*pathListPtr); i += 1 {
-		addPATHEnv((*pathListPtr)[i])
+	for i := 0; i < len(args.PathList); i += 1 {
+		addPATHEnv((args.PathList)[i])
 	}
 
-	for i := 0; i < len(*jsListPtr); i += 1 {
-		libvm.ReadJSFile(vm, (*jsListPtr)[i])
+	for i := 0; i < len(args.JSList); i += 1 {
+		libvm.ReadJSFile(vm, (args.JSList)[i])
 	}
 
-	codeList := sort.StringSlice(*codeListPtr)
+	codeList := sort.StringSlice(args.CodeList)
 
-	if *reversePtr {
+	if args.Reverse {
 		for i, j := 0, len(codeList)-1; i < j; i, j = i+1, j-1 {
 			codeList[i], codeList[j] = codeList[j], codeList[i]
 		}
