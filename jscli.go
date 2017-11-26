@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/kjelly/jscli/lib/libvm"
+	"github.com/kjelly/jscli/lib/utils"
 	"github.com/robertkrimen/otto"
-	"github.com/ya790206/jscli/lib/libvm"
-	"github.com/ya790206/jscli/lib/utils"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"io/ioutil"
 	"os"
