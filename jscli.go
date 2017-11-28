@@ -15,9 +15,8 @@ func readAll() string {
 	bytes, err := ioutil.ReadAll(os.Stdin)
 	if err == nil {
 		return string(bytes)
-	} else {
-		panic("Failed to read stdin")
 	}
+	panic("Failed to read stdin")
 }
 
 type Matrix [][]string
@@ -73,15 +72,15 @@ func main() {
 	vm.Run("println = console.log")
 	libvm.SetBuiltinFunc(vm)
 
-	for i := 0; i < len(args.FuncList); i += 1 {
+	for i := 0; i < len(args.FuncList); i++ {
 		libvm.InitExternelFunc(vm, (args.FuncList)[i])
 	}
 
-	for i := 0; i < len(args.PathList); i += 1 {
+	for i := 0; i < len(args.PathList); i++ {
 		addPATHEnv((args.PathList)[i])
 	}
 
-	for i := 0; i < len(args.JSList); i += 1 {
+	for i := 0; i < len(args.JSList); i++ {
 		libvm.ReadJSFile(vm, (args.JSList)[i])
 	}
 
@@ -93,7 +92,7 @@ func main() {
 		}
 	}
 
-	for i := 0; i < len(codeList); i += 1 {
+	for i := 0; i < len(codeList); i++ {
 		_, err := vm.Run(codeList[i])
 		if err != nil {
 			panic(err)
