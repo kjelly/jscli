@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"sort"
+	"strings"
 )
 
 func readAll() string {
@@ -61,6 +62,8 @@ func main() {
 	} else {
 		stdin = readAll()
 	}
+
+	stdin = strings.TrimSpace(stdin)
 
 	lines, matrixPtr := utils.ParseStdin(stdin, args.ColumnSeq, args.LineSeq)
 
