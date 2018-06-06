@@ -49,11 +49,16 @@ or
 sudo netstat -tulnp|grep LISTEN|jscli "printC(matrix, 3)"
 ```
 
-
 list listening address and port and process
 
 ```
 sudo netstat -tulnp|grep LISTEN|jscli "function showLine(i){printf('%s -> %s\n', i[3], i[6]);}" "matrix.map(showLine)"
+```
+
+
+show the same out as `netstat -tulnp`
+```
+sudo jscli.go -f netstat --nostdin "print(netstat('-tulnp'))"
 ```
 
 Javascript Builtin Function
