@@ -91,7 +91,7 @@ func SetBuiltinFunc(vm *otto.Otto) {
 		if err != nil {
 			panic(err)
 		}
-		for i := 1; i < len(call.ArgumentList); i += 1 {
+		for i := 1; i < len(call.ArgumentList); i++ {
 			ret, err := call.Argument(i).ToString()
 			if err == nil {
 				args[i] = ret
@@ -155,7 +155,7 @@ func SetBuiltinFunc(vm *otto.Otto) {
 		if err != nil {
 			panic(err)
 		}
-		for i := 1; i < len(call.ArgumentList); i += 1 {
+		for i := 1; i < len(call.ArgumentList); i++ {
 			str, err := call.Argument(i).ToString()
 			if err == nil {
 				args[i-1] = str
@@ -183,7 +183,7 @@ func InitExternelFunc(vm *otto.Otto, cmdPath string) {
 	funcName := cmdPath[:len(cmdPath)-len(filepath.Ext(cmdPath))]
 	vm.Set(funcName, func(call otto.FunctionCall) otto.Value {
 		args := make([]string, len(call.ArgumentList))
-		for i := 0; i < len(call.ArgumentList); i += 1 {
+		for i := 0; i < len(call.ArgumentList); i++ {
 			ret, err := call.Argument(i).ToString()
 			if err == nil {
 				args[i] = ret
