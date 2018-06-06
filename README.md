@@ -20,7 +20,7 @@ Install
 -------
 
 ```
-$ go get github.com/ya790206/jscli
+$ go get github.com/kjelly/jscli
 ```
 
 
