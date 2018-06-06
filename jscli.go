@@ -8,6 +8,7 @@ import (
 	"github.com/robertkrimen/otto"
 	"io/ioutil"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -20,6 +21,7 @@ func readAll() string {
 	panic("Failed to read stdin")
 }
 
+// Matrix matrix
 type Matrix [][]string
 
 func addPATHEnv(path string) {
@@ -41,16 +43,18 @@ func main() {
 	fmt.Printf("")
 
 	var args struct {
-		CodeList  []string `arg:"positional"`
+		CodeList  []string `arg:"positional" help:"javascript code"`
 		LineSeq   string   `arg:"-l"`
 		ColumnSeq string   `arg:"-c"`
-		FuncList  []string `arg:"-f"`
-		JSList    []string `arg:"-j"`
-		PathList  []string `arg:"-p"`
-		Reverse   bool     `arg:"-r"`
-		NoStdin   bool     `arg:"--nostdin"`
+		FuncAlias string   `arg:"-a" help:"The string used for being replaced with function"`
+		FuncList  []string `arg:"-f" help:"import external command as buildin function."`
+		JSList    []string `arg:"-j" help:"the js files to import"`
+		PathList  []string `arg:"-p" help:"the path for searching execute."`
+		Reverse   bool     `arg:"-r" help:"execute code from right to left."`
+		NoStdin   bool     `arg:"--nostdin,-s" help:"Don't read from stdin."`
 	}
 	args.LineSeq = "\n"
+	args.FuncAlias = "func"
 	args.ColumnSeq = " +"
 	arg.MustParse(&args)
 
@@ -77,6 +81,7 @@ func main() {
 
 	for i := 0; i < len(args.FuncList); i++ {
 		libvm.InitExternelFunc(vm, (args.FuncList)[i])
+		fmt.Printf("%s\n", args.FuncList[i])
 	}
 
 	for i := 0; i < len(args.PathList); i++ {
@@ -95,8 +100,13 @@ func main() {
 		}
 	}
 
+	re1 := regexp.MustCompile(args.FuncAlias + " ")
+	re2 := regexp.MustCompile(args.FuncAlias + "\\(")
+
 	for i := 0; i < len(codeList); i++ {
-		_, err := vm.Run(codeList[i])
+		code := re1.ReplaceAllString(codeList[i], "function ")
+		code = re2.ReplaceAllString(code, "function(")
+		_, err := vm.Run(code)
 		if err != nil {
 			panic(err)
 		}
