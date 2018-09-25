@@ -103,13 +103,19 @@ func main() {
 	re1 := regexp.MustCompile(args.FuncAlias + " ")
 	re2 := regexp.MustCompile(args.FuncAlias + "\\(")
 
+	var err error
+	var out otto.Value
 	for i := 0; i < len(codeList); i++ {
 		code := re1.ReplaceAllString(codeList[i], "function ")
 		code = re2.ReplaceAllString(code, "function(")
-		_, err := vm.Run(code)
+		out, err = vm.Run(code)
 		if err != nil {
 			panic(err)
 		}
+	}
+	if !out.IsUndefined() {
+		outString, _ := out.ToString()
+		fmt.Printf("%s\n", outString)
 	}
 
 }
