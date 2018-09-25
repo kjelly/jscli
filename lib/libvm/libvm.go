@@ -56,6 +56,14 @@ printColumn = function(arr, column, func) {
 	});
 }
 printC=printColumn;
+
+try {
+	json = JSON.parse(stdin)
+	err = null
+}catch(e){
+	json = {}
+	err = e
+}
 `,
 }
 
