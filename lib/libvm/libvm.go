@@ -64,6 +64,24 @@ try {
 	json = {}
 	err = e
 }
+
+Object.prototype.keys = function(){
+	var ret = []
+	for(var i in this){
+		if(this.hasOwnProperty(i)){
+			ret.push(i)
+		}
+	}
+	return ret
+}
+
+Object.prototype.toString = function(){
+	try{
+		return JSON.stringify(this, null, 2);
+}catch(e){
+	return this;
+}
+}
 `,
 }
 

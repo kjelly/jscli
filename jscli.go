@@ -113,7 +113,7 @@ func main() {
 			panic(err)
 		}
 	}
-	if !out.IsUndefined() {
+	if !out.IsUndefined() && !out.IsNull() {
 		outString, _ := out.ToString()
 		fmt.Printf("%s\n", outString)
 	}
