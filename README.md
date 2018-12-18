@@ -30,7 +30,7 @@ Example
 json pretty-printing
 
 ```
-$ cat json.content |jscli "print(JSON.stringify(JSON.parse(stdin), null, 2))"
+$ cat content.json |jscli "JSON.stringify(json, null, 2)"
 ```
 
 list listening address and port
@@ -41,7 +41,7 @@ sudo netstat -tulnp|grep LISTEN|jscli "for(i=0;i<lines.length;i+=1){print(lines[
 or
 
 ```
-sudo netstat -tulnp|grep LISTEN|jscli "function showLine(i){println(i[3]);}" "matrix.map(showLine)
+sudo netstat -tulnp|grep LISTEN|jscli "function f(i){return i[3];}" "matrix.map(f).join('\n')"
 ```
 or
 
@@ -52,7 +52,7 @@ sudo netstat -tulnp|grep LISTEN|jscli "printC(matrix, 3)"
 list listening address and port and process
 
 ```
-sudo netstat -tulnp|grep LISTEN|jscli "function showLine(i){printf('%s -> %s\n', i[3], i[6]);}" "matrix.map(showLine)"
+sudo netstat -tulnp|grep LISTEN|go run jscli.go "function f(i){printf('%s -> %s\n', i[3], i[6]);}" "matrix.map(f)" "null"
 ```
 
 
