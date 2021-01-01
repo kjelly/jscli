@@ -1,10 +1,8 @@
 # jscli
-=======
 
 Write and run simple Javascript code in common line
 
-Introduction
-------------
+## Introduction
 
 Write javascript code in command line, read data from stdin, and show the result you expect!
 The tools is like awk. But it let you write in Javascript.
@@ -16,16 +14,14 @@ Why use jscli?
 - Only one executable. There are not many dependences.
 
 
-Install
--------
+## Install
 
 ```
 $ go get github.com/kjelly/jscli
 ```
 
 
-Example
--------
+## Example
 
 json pretty-printing
 
@@ -61,8 +57,7 @@ show the same out as `netstat -tulnp`
 sudo jscli.go -f netstat --nostdin "print(netstat('-tulnp'))"
 ```
 
-Javascript Builtin Function
----------------------------
+## Javascript Builtin Function
 
 Name | Explain
 ---- | -------
